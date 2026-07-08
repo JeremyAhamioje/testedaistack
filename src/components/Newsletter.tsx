@@ -29,7 +29,7 @@ export function Newsletter() {
           <div className="relative mx-auto max-w-2xl">
             <span className="inline-flex items-center gap-2 font-mono text-2xs font-medium uppercase tracking-eyebrow text-accent-200">
               <span className="h-1.5 w-1.5 rounded-full bg-accent-400" />
-              The testedaistack Brief
+              The operatorstudio.ai Brief
             </span>
 
             <h2 className="display mt-5 text-3xl leading-tight text-white sm:text-4xl md:text-[2.75rem]">

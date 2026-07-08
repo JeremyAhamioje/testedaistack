@@ -23,7 +23,7 @@ export const categories: Category[] = [
   {
     slug: 'hospitality',
     name: 'Hospitality',
-    blurb: 'Front-desk voice agents and booking assistants trialed in real hotels and restaurants.',
+    blurb: 'Front-desk voice agents and booking assistants trained in real hotels and restaurants.',
     reviewCount: 18,
     topPick: 'Concierge Voice',
     icon: 'bell',

@@ -1,9 +1,9 @@
 {
-  "name": "testedaistack",
+  "name": "operatorstudio-ai",
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "testedaistack — an independent editorial publication that tests AI software in real businesses.",
+  "description": "operatorstudio.ai — an independent editorial publication that tests AI software in real businesses.",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",

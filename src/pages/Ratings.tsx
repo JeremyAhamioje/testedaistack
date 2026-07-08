@@ -159,7 +159,7 @@ export default function Ratings() {
   return (
     <>
       <Seo
-        title="Sector Ratings — testedaistack"
+        title="Sector Ratings — operatorstudio.ai"
         description="AI software ratings across every sector we test — property management, hospitality, legal, accounting, marketing, revenue cycle, and construction."
         path="/ratings"
         jsonLd={{

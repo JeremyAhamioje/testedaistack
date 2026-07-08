@@ -11,7 +11,7 @@ function NotFound() {
   return (
     <>
       <Seo
-        title="Article not found — testedaistack"
+        title="Article not found — operatorstudio.ai"
         description="The article you’re looking for doesn’t exist or has moved."
         path="/blog"
       />
@@ -43,7 +43,7 @@ export default function BlogPost() {
   return (
     <>
       <Seo
-        title={`${post.title} — testedaistack`}
+        title={`${post.title} — operatorstudio.ai`}
         description={post.excerpt}
         path={`/blog/${post.slug}`}
         type="article"
@@ -55,7 +55,7 @@ export default function BlogPost() {
           datePublished: post.date,
           articleSection: post.category,
           author: { '@type': 'Person', name: post.author },
-          publisher: { '@type': 'Organization', name: 'testedaistack' },
+          publisher: { '@type': 'Organization', name: 'operatorstudio.ai' },
           mainEntityOfPage: `${SITE_URL}/blog/${post.slug}`,
         }}
       />

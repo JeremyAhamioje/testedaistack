@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { staggerContainer, staggerItem, EASE } from '@/utils/motion'
 import { ArrowRight, CategoryIcon } from '@/assets/icons'
+import { useWorkWithUs } from './WorkWithUsDialog'
 import { heroLogos as LOGOS } from '@/data/logos'
 
 // Rotating industry sets for the social-proof line. Each set micro-animates
@@ -66,7 +67,7 @@ function IndustryRotator() {
   return (
     <div className="mt-20 flex flex-col items-center">
       <p className="font-mono text-2xs font-medium uppercase tracking-[0.14em] text-ink-faint">
-        We work with industries such as
+        Industry specialities
       </p>
       {/* Grid-stack crossfade: both sets share one cell so one is always visible
           (no blank gap), and the container still sizes to content / wraps. */}
@@ -95,6 +96,7 @@ function IndustryRotator() {
 }
 
 export function Hero() {
+  const { open } = useWorkWithUs()
   return (
     <section id="top" className="relative overflow-hidden pb-24 pt-32 md:pt-44">
       <motion.div
@@ -124,17 +126,18 @@ export function Hero() {
         </motion.p>
 
         <motion.div variants={staggerItem} className="mt-9 flex flex-wrap items-center justify-center gap-3">
-          <a
-            href="#newsletter"
+          <button
+            type="button"
+            onClick={open}
             className="inline-flex items-center rounded-full bg-ink px-6 py-3 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-accent-600 hover:shadow-lift"
           >
             Work with us
-          </a>
+          </button>
           <Link
-            to="/blog"
+            to="/methodology"
             className="group inline-flex items-center gap-1.5 rounded-full border border-line bg-paper px-6 py-3 text-sm font-semibold text-ink-soft transition-all hover:-translate-y-0.5 hover:border-accent-200 hover:text-ink hover:shadow-card"
           >
-            Read our blogs
+            See how we test
             <ArrowRight width={15} height={15} className="transition-transform group-hover:translate-x-0.5" />
           </Link>
         </motion.div>

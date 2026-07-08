@@ -1,155 +1,139 @@
-import { motion } from 'framer-motion'
-import { EASE, viewportOnce } from '@/utils/motion'
-import { CategoryIcon } from '@/assets/icons'
+import type { ReactNode } from 'react'
+import { motion, type Variants } from 'framer-motion'
+import { viewportOnce } from '@/utils/motion'
 
-/**
- * n8n-style automation graph on a pure-black canvas. Connector lines *draw out*
- * to reach each next node in sequence (pathLength), then a bright pulse loops
- * along them like live data. All-SVG (viewBox) so nodes + lines scale together;
- * nodes use foreignObject so they can be styled with normal HTML/Tailwind and
- * show real product logos.
- */
+// The engagement process, as a serpentine flow on a pure-black canvas. No
+// imagery — just the nodes and connective arrows. Nodes animate in one after
+// another following the flow order, with a light continuous nudge on arrows.
+const STEPS = [
+  'Share your goals and challenges',
+  'We identify the right-fit tools from our tool catalog',
+  'We present curated options with use cases',
+  'You choose the tools that fit your goals',
+  'We support integration and uncover new use cases',
+  'You drive measurable business outcomes with AI',
+]
 
-const IMG = {
-  lead: 'https://res.cloudinary.com/dz6kxumoo/image/upload/v1783358136/download_24_hcsvht.jpg',
-  agent:
-    'https://res.cloudinary.com/dz6kxumoo/image/upload/v1783358139/original_90e9d2ebbaa6cdb34e9badbc4870e41c_gif_500_495_nnynir.gif',
-  claude: 'https://res.cloudinary.com/dz6kxumoo/image/upload/v1783358137/Claude_ggdvax.jpg',
-  database:
-    'https://res.cloudinary.com/dz6kxumoo/image/upload/v1783358136/A_database_is_an_organized_collection_of_data_that_enables_businesses_to_store_manage_and_retrieve_information_efficiently__It_s_ecdcox.jpg',
-  crm: 'https://res.cloudinary.com/dz6kxumoo/image/upload/v1783358137/Product_Return_Policy__The_Strategic_Guide_for_E-commerce_Websites_-_Netolink_slobp2.jpg',
-  bell:
-    'https://res.cloudinary.com/dz6kxumoo/image/upload/v1783358136/Bell_simple_flat_icon_vector_illustration__Alarm_icon_vector_illustration_vthrj4.jpg',
-  megaphone:
-    'https://res.cloudinary.com/dz6kxumoo/image/upload/v1783358136/Megaphone_Icon_-_Free_PNG_SVG_486316_-_Noun_Project_y9qpjr.jpg',
+const ARROW = '#5b8def'
+const NODE_BG = '#131b2e'
+
+const container: Variants = { hidden: {}, show: {} }
+
+// Entrance: each node/arrow pops in on a delay set by its position in the flow.
+const nodeVar: Variants = {
+  hidden: { opacity: 0, scale: 0.85, y: 10 },
+  show: (i = 0) => ({
+    opacity: 1,
+    scale: 1,
+    y: 0,
+    transition: { delay: i * 0.09, type: 'spring', stiffness: 240, damping: 20 },
+  }),
 }
 
-type NodeProps = {
-  x: number
-  y: number
-  w: number
-  h: number
-  icon?: string
-  img?: string
-  title: string
-  sub?: string
-  delay: number
-}
-
-function Node({ x, y, w, h, icon, img, title, sub, delay }: NodeProps) {
+function Box({ order, children, className = '' }: { order: number; children: ReactNode; className?: string }) {
   return (
-    <foreignObject x={x} y={y} width={w} height={h}>
+    <motion.div
+      variants={nodeVar}
+      custom={order}
+      className={
+        'flex min-h-[92px] items-center justify-center rounded-xl px-5 py-4 text-center text-sm font-semibold leading-snug text-white shadow-[0_16px_40px_-24px_rgba(0,0,0,0.9)] ring-1 ring-inset ring-white/10 ' +
+        className
+      }
+      style={{ backgroundColor: NODE_BG }}
+    >
+      {children}
+    </motion.div>
+  )
+}
+
+function FlowArrow({
+  dir,
+  order,
+  className = '',
+}: {
+  dir: 'right' | 'left' | 'down'
+  order: number
+  className?: string
+}) {
+  const nudge =
+    dir === 'right' ? { x: [0, 4, 0] } : dir === 'left' ? { x: [0, -4, 0] } : { y: [0, 4, 0] }
+
+  const svg =
+    dir === 'down' ? (
+      <svg width="24" height="44" viewBox="0 0 24 44" fill="none" stroke={ARROW} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 4v30" />
+        <path d="M6 28l6 8 6-8" />
+      </svg>
+    ) : dir === 'right' ? (
+      <svg width="46" height="24" viewBox="0 0 46 24" fill="none" stroke={ARROW} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M4 12h34" />
+        <path d="M30 6l10 6-10 6" />
+      </svg>
+    ) : (
+      <svg width="46" height="24" viewBox="0 0 46 24" fill="none" stroke={ARROW} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M42 12H8" />
+        <path d="M16 6L6 12l10 6" />
+      </svg>
+    )
+
+  return (
+    <motion.div variants={nodeVar} custom={order} className={'flex items-center justify-center ' + className}>
       <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        whileInView={{ opacity: 1, scale: 1 }}
-        viewport={viewportOnce}
-        transition={{ duration: 0.4, delay, ease: EASE }}
-        className="flex h-full w-full items-center gap-2 rounded-xl border border-[#2b2b2b] bg-[#121212] px-2 shadow-[0_10px_24px_-12px_rgba(0,0,0,0.9)]"
+        animate={nudge}
+        transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
+        aria-hidden="true"
       >
-        <span className="grid h-8 w-8 shrink-0 place-items-center overflow-hidden rounded-md bg-white">
-          {img ? (
-            <img src={img} alt={title} loading="lazy" className="h-full w-full object-cover" />
-          ) : (
-            <CategoryIcon name={icon ?? 'branch'} width={16} height={16} className="text-[#7aa2ff]" />
-          )}
-        </span>
-        <span className="min-w-0 leading-tight">
-          <span className="block truncate text-[11px] font-semibold text-neutral-100">{title}</span>
-          {sub && <span className="block truncate font-mono text-[9px] text-neutral-400">{sub}</span>}
-        </span>
+        {svg}
       </motion.div>
-    </foreignObject>
-  )
-}
-
-// Solid connector: faint base + accent draw-in + looping pulse.
-function Flow({ d, drawDelay, pulseDelay }: { d: string; drawDelay: number; pulseDelay: number }) {
-  return (
-    <g fill="none">
-      <path d={d} stroke="#2b2b2b" strokeWidth={1.6} />
-      <motion.path
-        d={d}
-        stroke="#5B8DEF"
-        strokeWidth={1.8}
-        strokeLinecap="round"
-        initial={{ pathLength: 0 }}
-        whileInView={{ pathLength: 1 }}
-        viewport={viewportOnce}
-        transition={{ duration: 0.6, delay: drawDelay, ease: EASE }}
-      />
-      <motion.path
-        d={d}
-        stroke="#bcd4ff"
-        strokeWidth={2.4}
-        strokeLinecap="round"
-        strokeDasharray="7 240"
-        initial={{ strokeDashoffset: 247 }}
-        animate={{ strokeDashoffset: [247, 0] }}
-        transition={{ duration: 1.5, ease: 'linear', repeat: Infinity, repeatDelay: 1.1, delay: pulseDelay }}
-      />
-    </g>
-  )
-}
-
-// Dashed sub-connector (model / memory / tools) — just fades in.
-function SubLink({ d, delay }: { d: string; delay: number }) {
-  return (
-    <motion.path
-      d={d}
-      fill="none"
-      stroke="#3a3a3a"
-      strokeWidth={1.3}
-      strokeDasharray="3 5"
-      initial={{ opacity: 0 }}
-      whileInView={{ opacity: 0.9 }}
-      viewport={viewportOnce}
-      transition={{ duration: 0.5, delay }}
-    />
+    </motion.div>
   )
 }
 
 export function WorkflowDiagram() {
   return (
-    <div className="overflow-hidden rounded-2xl border border-[#1f1f1f] bg-black">
-      <div className="flex items-center justify-between px-5 pt-4">
-        <span className="font-mono text-2xs uppercase tracking-[0.14em] text-neutral-500">
-          Under the hood · automation graph
-        </span>
-        <span className="inline-flex items-center gap-1.5 rounded-full border border-[#2b2b2b] px-2.5 py-1 font-mono text-2xs font-medium text-neutral-300">
-          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />
-          Running
-        </span>
-      </div>
+    <div className="rounded-2xl bg-black p-6 ring-1 ring-white/10 md:p-10">
+      {/* Desktop: serpentine grid (top row →, drop down on the right, bottom row ←) */}
+      <motion.div
+        variants={container}
+        initial="hidden"
+        whileInView="show"
+        viewport={viewportOnce}
+        className="hidden md:grid"
+        style={{ gridTemplateColumns: '1fr auto 1fr auto 1fr', columnGap: 8, rowGap: 4 }}
+      >
+        {/* Row 1 → (flow order 0–4) */}
+        <Box order={0} className="[grid-area:1/1]">{STEPS[0]}</Box>
+        <FlowArrow dir="right" order={1} className="self-center [grid-area:1/2]" />
+        <Box order={2} className="[grid-area:1/3]">{STEPS[1]}</Box>
+        <FlowArrow dir="right" order={3} className="self-center [grid-area:1/4]" />
+        <Box order={4} className="[grid-area:1/5]">{STEPS[2]}</Box>
 
-      <svg viewBox="0 84 760 300" preserveAspectRatio="xMidYMid meet" className="block w-full">
-        <defs>
-          <pattern id="wf-dots" width="22" height="22" patternUnits="userSpaceOnUse">
-            <circle cx="1.5" cy="1.5" r="1.1" fill="#1c1c1c" />
-          </pattern>
-        </defs>
-        <rect y="60" width="760" height="360" fill="url(#wf-dots)" />
+        {/* Connector down on the right (flow order 5) */}
+        <FlowArrow dir="down" order={5} className="justify-self-center [grid-area:2/5]" />
 
-        {/* Sub-links from AI Agent to model / memory / tools */}
-        <SubLink d="M324 238 C282 270 204 288 204 312" delay={0.55} />
-        <SubLink d="M324 238 C324 272 324 292 324 312" delay={0.6} />
-        <SubLink d="M324 238 C366 270 444 288 444 312" delay={0.65} />
+        {/* Row 2 ← (flow order 6–10, laid out right→left) */}
+        <Box order={10} className="[grid-area:3/1]">{STEPS[5]}</Box>
+        <FlowArrow dir="left" order={9} className="self-center [grid-area:3/2]" />
+        <Box order={8} className="[grid-area:3/3]">{STEPS[4]}</Box>
+        <FlowArrow dir="left" order={7} className="self-center [grid-area:3/4]" />
+        <Box order={6} className="[grid-area:3/5]">{STEPS[3]}</Box>
+      </motion.div>
 
-        {/* Main flow */}
-        <Flow d="M160 200 C210 200 226 200 248 200" drawDelay={0.15} pulseDelay={1.8} />
-        <Flow d="M400 200 C435 200 445 200 470 200" drawDelay={0.9} pulseDelay={2.3} />
-        <Flow d="M586 200 C610 200 624 160 624 136" drawDelay={1.35} pulseDelay={2.8} />
-        <Flow d="M586 200 C610 200 624 240 624 276" drawDelay={1.35} pulseDelay={2.8} />
-
-        {/* Nodes */}
-        <Node x={24} y={172} w={136} h={56} img={IMG.lead} title="On new lead" sub="Form / call" delay={0.05} />
-        <Node x={248} y={162} w={152} h={76} img={IMG.agent} title="AI Agent" sub="Analyze + decide" delay={0.35} />
-        <Node x={148} y={312} w={112} h={44} img={IMG.claude} title="Claude" delay={0.6} />
-        <Node x={268} y={312} w={112} h={44} img={IMG.database} title="Memory" delay={0.65} />
-        <Node x={388} y={312} w={112} h={44} img={IMG.crm} title="CRM" delay={0.7} />
-        <Node x={470} y={172} w={116} h={56} icon="branch" title="Qualified?" delay={0.95} />
-        <Node x={624} y={112} w={124} h={48} img={IMG.bell} title="Notify sales" sub="Slack" delay={1.35} />
-        <Node x={624} y={252} w={124} h={48} img={IMG.megaphone} title="Nurture" sub="Drip" delay={1.35} />
-      </svg>
+      {/* Mobile: single column, arrows point down */}
+      <motion.div
+        variants={container}
+        initial="hidden"
+        whileInView="show"
+        viewport={viewportOnce}
+        className="flex flex-col items-stretch gap-1 md:hidden"
+      >
+        {STEPS.map((step, i) => (
+          <div key={step} className="contents">
+            <Box order={i * 2}>{step}</Box>
+            {i < STEPS.length - 1 && <FlowArrow dir="down" order={i * 2 + 1} className="py-1" />}
+          </div>
+        ))}
+      </motion.div>
     </div>
   )
 }

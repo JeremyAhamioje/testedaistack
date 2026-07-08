@@ -6,7 +6,7 @@ export function Logo({ compact = false }: { compact?: boolean }) {
         (compact ? 'text-base' : 'text-[1.15rem]')
       }
     >
-      testedaistack
+      operatorstudio.ai
     </span>
   )
 }

@@ -21,13 +21,13 @@ export default function Blog() {
   return (
     <>
       <Seo
-        title="The Blog — testedaistack"
+        title="The Blog — operatorstudio.ai"
         description="Hands-on reviews, buyer’s guides, and field notes from testing AI software inside real businesses."
         path="/blog"
         jsonLd={{
           '@context': 'https://schema.org',
           '@type': 'Blog',
-          name: 'testedaistack Blog',
+          name: 'operatorstudio.ai Blog',
           url: `${SITE_URL}/blog`,
           blogPost: blogPosts.map((p) => ({
             '@type': 'BlogPosting',

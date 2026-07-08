@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { categories } from '@/data/categories'
-import { Star } from '@/assets/icons'
 import { cn } from '@/utils/cn'
 import { Reveal } from './ui/Reveal'
 import { SectionHeading } from './ui/SectionHeading'
@@ -61,17 +60,10 @@ export function FeaturedCategories() {
                     active === i ? 'opacity-100' : 'opacity-0',
                   )}
                 >
-                  <span className="font-mono text-2xs font-medium uppercase tracking-[0.14em] text-white/70">
-                    {cat.reviewCount} reviews
-                  </span>
-                  <h3 className="mt-1.5 text-2xl font-extrabold leading-tight text-white [text-shadow:0_1px_10px_rgba(0,0,0,0.7)]">
+                  <h3 className="text-2xl font-extrabold leading-tight text-white [text-shadow:0_1px_10px_rgba(0,0,0,0.7)]">
                     {cat.name}
                   </h3>
                   <p className="mt-2 text-sm leading-relaxed text-white/85">{cat.blurb}</p>
-                  <span className="mt-4 inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-medium backdrop-blur">
-                    <Star width={12} height={12} filled className="text-amber-300" />
-                    Top pick · {cat.topPick}
-                  </span>
                 </div>
               </div>
             ))}

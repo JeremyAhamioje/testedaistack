@@ -5,7 +5,7 @@ import { useEffect } from 'react'
  * (e.g. a custom domain instead of the default Vercel one) — every canonical,
  * og:url and JSON-LD URL is derived from it.
  */
-export const SITE_URL = 'https://testedaistack.vercel.app'
+export const SITE_URL = 'https://operatorstudio.ai'
 
 function upsertMeta(attr: 'name' | 'property', key: string, content: string) {
   let el = document.head.querySelector<HTMLMetaElement>(`meta[${attr}="${key}"]`)

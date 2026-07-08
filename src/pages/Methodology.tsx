@@ -28,8 +28,8 @@ export default function Methodology() {
   return (
     <>
       <Seo
-        title="Our Methodology — testedaistack"
-        description="How testedaistack decides what actually works: no pay-to-play, real-business deployments, and one rubric scored the same way every time."
+        title="Our Methodology — operatorstudio.ai"
+        description="How operatorstudio.ai decides what actually works: no pay-to-play, real-business deployments, and one rubric scored the same way every time."
         path="/methodology"
       />
       <section className="relative overflow-hidden pt-28 md:pt-36">

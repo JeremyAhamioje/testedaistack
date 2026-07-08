@@ -1,4 +1,4 @@
-# testedaistack — Independent AI Software Reviews
+# operatorstudio.ai — Independent AI Software Reviews
 
 A premium, editorial review platform for AI business software. Built as a fast, SEO-friendly
 marketing/editorial site (not a SaaS app) with **React + Vite + TypeScript + TailwindCSS + Framer Motion**.
